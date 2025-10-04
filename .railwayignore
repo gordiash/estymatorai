@@ -1,0 +1,30 @@
+# Ignoruj pliki treningowe i cache
+catboost_info/
+src/__pycache__/
+src/utils/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Ignoruj pliki testowe
+test_specific_apartment.py
+test_torun_simple.py
+
+# Ignoruj pliki batch
+run_train.bat
+
+# Ignoruj pliki środowiskowe
+.env
+.env.local
+.env.*.local
+
+# Ignoruj pliki IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignoruj pliki systemowe
+.DS_Store
+Thumbs.db

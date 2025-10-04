@@ -1,0 +1,29 @@
+{
+  "DataTreningu": "2025-10-04T16:11:43.965895+00:00",
+  "Split": {
+    "Metoda": "Time-based + GroupKFold(5)",
+    "TimeCutoff": "NaT",
+    "TrainRows": 49425,
+    "TestRows": 12357
+  },
+  "Model": {
+    "Typ": "RandomForestRegressor (with TransformedTargetRegressor log1p)",
+    "Parametry": {
+      "model__regressor__n_estimators": 200,
+      "model__regressor__min_samples_split": 5,
+      "model__regressor__min_samples_leaf": 1,
+      "model__regressor__max_features": "sqrt",
+      "model__regressor__max_depth": null,
+      "model__regressor__bootstrap": true
+    }
+  },
+  "Wyniki": {
+    "Test": {
+      "MAE": 657735.6821600442,
+      "MAPE": 0.2872511531705081
+    },
+    "OsiagnietoProgMAPE": false,
+    "ProgMAPE": 0.0038,
+    "NajlepszaProba": 1
+  }
+}

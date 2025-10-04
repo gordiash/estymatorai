@@ -1,0 +1,543 @@
+{
+  "DataTreningu": "2025-10-03T18:00:02.206054+00:00",
+  "ZakresDanych": {
+    "Miasta": [
+      "Białystok",
+      "Bielsko-Biała",
+      "Bydgoszcz",
+      "Bytom",
+      "Chorzów",
+      "Częstochowa",
+      "Dąbrowa Górnicza",
+      "Gdańsk",
+      "Gdynia",
+      "Gliwice",
+      "Goleniów",
+      "Gorzów Wielkopolski",
+      "Gryfino",
+      "Katowice",
+      "Kielce",
+      "Kraków",
+      "Lublin",
+      "Mysłowice",
+      "Olsztyn",
+      "Police",
+      "Poznań",
+      "Płock",
+      "Radom",
+      "Ruda Śląska",
+      "Rzeszów",
+      "Siemianowice Śląskie",
+      "Sopot",
+      "Sosnowiec",
+      "Szczecin",
+      "Toruń",
+      "Unknown",
+      "Warszawa",
+      "Wrocław",
+      "Zabrze",
+      "białostocki",
+      "bielski",
+      "będziński",
+      "częstochowski",
+      "gliwicki",
+      "gorzowski",
+      "kielecki",
+      "olsztyński",
+      "pucki",
+      "radomski",
+      "rzeszowski",
+      "toruński",
+      "wejherowski",
+      "Łódź"
+    ],
+    "LiczbaRekordow": 61782,
+    "ZakresDat": {
+      "Min": "NaT",
+      "Max": "NaT"
+    }
+  },
+  "Split": {
+    "Metoda": "Time-based + GroupKFold(5)",
+    "TimeCutoff": "2025-08-04 16:41:23.621525",
+    "TrainRows": 49425,
+    "TestRows": 12357
+  },
+  "Model": {
+    "Typ": "CatBoostRegressor",
+    "Parametry": {
+      "iterations": 20000,
+      "learning_rate": 0.03,
+      "depth": 6,
+      "l2_leaf_reg": 3.0,
+      "loss_function": "RMSE",
+      "od_wait": 400,
+      "od_type": "Iter",
+      "random_seed": 42,
+      "verbose": false,
+      "eval_metric": "RMSE"
+    }
+  },
+  "Wyniki": {
+    "CVFolds": [
+      {
+        "params": {
+          "depth": 6,
+          "learning_rate": 0.03,
+          "l2_leaf_reg": 3.0
+        },
+        "CV_MAPE": 0.2584322595178424
+      },
+      {
+        "params": {
+          "depth": 6,
+          "learning_rate": 0.03,
+          "l2_leaf_reg": 5.0
+        },
+        "CV_MAPE": 0.25442158934998566
+      },
+      {
+        "params": {
+          "depth": 6,
+          "learning_rate": 0.03,
+          "l2_leaf_reg": 8.0
+        },
+        "CV_MAPE": 0.24573685589154307
+      },
+      {
+        "params": {
+          "depth": 6,
+          "learning_rate": 0.05,
+          "l2_leaf_reg": 3.0
+        },
+        "CV_MAPE": 0.25132669324006496
+      },
+      {
+        "params": {
+          "depth": 6,
+          "learning_rate": 0.05,
+          "l2_leaf_reg": 5.0
+        },
+        "CV_MAPE": 0.24072635162728534
+      },
+      {
+        "params": {
+          "depth": 6,
+          "learning_rate": 0.05,
+          "l2_leaf_reg": 8.0
+        },
+        "CV_MAPE": 0.24006979956374158
+      },
+      {
+        "params": {
+          "depth": 6,
+          "learning_rate": 0.08,
+          "l2_leaf_reg": 3.0
+        },
+        "CV_MAPE": 0.24714740842879604
+      },
+      {
+        "params": {
+          "depth": 6,
+          "learning_rate": 0.08,
+          "l2_leaf_reg": 5.0
+        },
+        "CV_MAPE": 0.2538768984891212
+      },
+      {
+        "params": {
+          "depth": 6,
+          "learning_rate": 0.08,
+          "l2_leaf_reg": 8.0
+        },
+        "CV_MAPE": 0.24361884734856187
+      },
+      {
+        "params": {
+          "depth": 8,
+          "learning_rate": 0.03,
+          "l2_leaf_reg": 3.0
+        },
+        "CV_MAPE": 0.25513381961516945
+      },
+      {
+        "params": {
+          "depth": 8,
+          "learning_rate": 0.03,
+          "l2_leaf_reg": 5.0
+        },
+        "CV_MAPE": 0.2567671457819496
+      },
+      {
+        "params": {
+          "depth": 8,
+          "learning_rate": 0.03,
+          "l2_leaf_reg": 8.0
+        },
+        "CV_MAPE": 0.2542091426192701
+      },
+      {
+        "params": {
+          "depth": 8,
+          "learning_rate": 0.05,
+          "l2_leaf_reg": 3.0
+        },
+        "CV_MAPE": 0.2492681108283544
+      },
+      {
+        "params": {
+          "depth": 8,
+          "learning_rate": 0.05,
+          "l2_leaf_reg": 5.0
+        },
+        "CV_MAPE": 0.24394663366156935
+      },
+      {
+        "params": {
+          "depth": 8,
+          "learning_rate": 0.05,
+          "l2_leaf_reg": 8.0
+        },
+        "CV_MAPE": 0.2504208595594749
+      },
+      {
+        "params": {
+          "depth": 8,
+          "learning_rate": 0.08,
+          "l2_leaf_reg": 3.0
+        },
+        "CV_MAPE": 0.2548150530485134
+      },
+      {
+        "params": {
+          "depth": 8,
+          "learning_rate": 0.08,
+          "l2_leaf_reg": 5.0
+        },
+        "CV_MAPE": 0.2501725679232575
+      },
+      {
+        "params": {
+          "depth": 8,
+          "learning_rate": 0.08,
+          "l2_leaf_reg": 8.0
+        },
+        "CV_MAPE": 0.24884104500167376
+      },
+      {
+        "params": {
+          "depth": 10,
+          "learning_rate": 0.03,
+          "l2_leaf_reg": 3.0
+        },
+        "CV_MAPE": 0.25223981679953317
+      },
+      {
+        "params": {
+          "depth": 10,
+          "learning_rate": 0.03,
+          "l2_leaf_reg": 5.0
+        },
+        "CV_MAPE": 0.25420159049471647
+      },
+      {
+        "params": {
+          "depth": 10,
+          "learning_rate": 0.03,
+          "l2_leaf_reg": 8.0
+        },
+        "CV_MAPE": 0.2473354507774809
+      },
+      {
+        "params": {
+          "depth": 10,
+          "learning_rate": 0.05,
+          "l2_leaf_reg": 3.0
+        },
+        "CV_MAPE": 0.2457472645518949
+      },
+      {
+        "params": {
+          "depth": 10,
+          "learning_rate": 0.05,
+          "l2_leaf_reg": 5.0
+        },
+        "CV_MAPE": 0.24620013067403118
+      },
+      {
+        "params": {
+          "depth": 10,
+          "learning_rate": 0.05,
+          "l2_leaf_reg": 8.0
+        },
+        "CV_MAPE": 0.24986324801952198
+      },
+      {
+        "params": {
+          "depth": 10,
+          "learning_rate": 0.08,
+          "l2_leaf_reg": 3.0
+        },
+        "CV_MAPE": 0.2560915336814879
+      },
+      {
+        "params": {
+          "depth": 10,
+          "learning_rate": 0.08,
+          "l2_leaf_reg": 5.0
+        },
+        "CV_MAPE": 0.24162021224971025
+      },
+      {
+        "params": {
+          "depth": 10,
+          "learning_rate": 0.08,
+          "l2_leaf_reg": 8.0
+        },
+        "CV_MAPE": 0.2412508384126149
+      }
+    ],
+    "Test": {
+      "MAE": 675679.4821530113,
+      "MAPE": 0.3462432428168732
+    },
+    "PerMiasto": [
+      {
+        "Miasto": "Białystok",
+        "MAE": 78855.10084010113,
+        "MAPE": 0.12814992563031866,
+        "Rows": 109
+      },
+      {
+        "Miasto": "Bielsko-Biała",
+        "MAE": 114891.93979785236,
+        "MAPE": 0.21183613377418245,
+        "Rows": 824
+      },
+      {
+        "Miasto": "Bytom",
+        "MAE": 301392.8933440168,
+        "MAPE": 1.8530401912883796,
+        "Rows": 2
+      },
+      {
+        "Miasto": "Częstochowa",
+        "MAE": 190591.47825544342,
+        "MAPE": 0.5308774342430125,
+        "Rows": 1189
+      },
+      {
+        "Miasto": "Dąbrowa Górnicza",
+        "MAE": 228295.67928548812,
+        "MAPE": 0.6348590265186663,
+        "Rows": 12
+      },
+      {
+        "Miasto": "Gdynia",
+        "MAE": 1558839.2513744652,
+        "MAPE": 0.2078654077668298,
+        "Rows": 1732
+      },
+      {
+        "Miasto": "Gliwice",
+        "MAE": 950274.0733654484,
+        "MAPE": 0.43780440203550014,
+        "Rows": 631
+      },
+      {
+        "Miasto": "Gorzów Wielkopolski",
+        "MAE": 139632.5638830229,
+        "MAPE": 0.38370531238284605,
+        "Rows": 739
+      },
+      {
+        "Miasto": "Kielce",
+        "MAE": 522363.1929813546,
+        "MAPE": 0.30443350056770596,
+        "Rows": 1094
+      },
+      {
+        "Miasto": "Mysłowice",
+        "MAE": 168388.58911626448,
+        "MAPE": 0.5501555203242895,
+        "Rows": 9
+      },
+      {
+        "Miasto": "Olsztyn",
+        "MAE": 166740.77420194118,
+        "MAPE": 0.3027373542896114,
+        "Rows": 632
+      },
+      {
+        "Miasto": "Płock",
+        "MAE": 122060.83237128357,
+        "MAPE": 0.2970692851191586,
+        "Rows": 167
+      },
+      {
+        "Miasto": "Radom",
+        "MAE": 251173.90236965878,
+        "MAPE": 0.6393705601183763,
+        "Rows": 694
+      },
+      {
+        "Miasto": "Ruda Śląska",
+        "MAE": 207335.96539428222,
+        "MAPE": 0.6961291191426758,
+        "Rows": 16
+      },
+      {
+        "Miasto": "Rzeszów",
+        "MAE": 957193.0590624782,
+        "MAPE": 0.3391374654547769,
+        "Rows": 2179
+      },
+      {
+        "Miasto": "Sopot",
+        "MAE": 176018.09890493512,
+        "MAPE": 0.24097870365587348,
+        "Rows": 10
+      },
+      {
+        "Miasto": "Sosnowiec",
+        "MAE": 62232.99496013899,
+        "MAPE": 0.19171881626932263,
+        "Rows": 749
+      },
+      {
+        "Miasto": "Toruń",
+        "MAE": 1150746.9839230173,
+        "MAPE": 0.24015175426990737,
+        "Rows": 922
+      },
+      {
+        "Miasto": "Zabrze",
+        "MAE": 183623.59367782672,
+        "MAPE": 0.6402681201883494,
+        "Rows": 494
+      },
+      {
+        "Miasto": "białostocki",
+        "MAE": 107989.55976524367,
+        "MAPE": 0.20557431014919242,
+        "Rows": 14
+      },
+      {
+        "Miasto": "bielski",
+        "MAE": 276279.78079860064,
+        "MAPE": 0.49283682781648525,
+        "Rows": 14
+      },
+      {
+        "Miasto": "będziński",
+        "MAE": 190827.697480559,
+        "MAPE": 0.6182067834811736,
+        "Rows": 3
+      },
+      {
+        "Miasto": "częstochowski",
+        "MAE": 288562.8405531335,
+        "MAPE": 0.8500168282469996,
+        "Rows": 4
+      },
+      {
+        "Miasto": "gliwicki",
+        "MAE": 216064.34219957297,
+        "MAPE": 0.6188758130028013,
+        "Rows": 12
+      },
+      {
+        "Miasto": "gorzowski",
+        "MAE": 57832.85903481278,
+        "MAPE": 0.13038046123373737,
+        "Rows": 10
+      },
+      {
+        "Miasto": "kielecki",
+        "MAE": 294187.67374556256,
+        "MAPE": 0.514003489837552,
+        "Rows": 10
+      },
+      {
+        "Miasto": "olsztyński",
+        "MAE": 13334023.295176767,
+        "MAPE": 0.5146233311099857,
+        "Rows": 32
+      },
+      {
+        "Miasto": "pucki",
+        "MAE": 112936.14603738027,
+        "MAPE": 0.11505698888756721,
+        "Rows": 4
+      },
+      {
+        "Miasto": "radomski",
+        "MAE": 207760.71208254513,
+        "MAPE": 1.819970683028324,
+        "Rows": 3
+      },
+      {
+        "Miasto": "rzeszowski",
+        "MAE": 237481.8880948417,
+        "MAPE": 0.46471845789561905,
+        "Rows": 41
+      },
+      {
+        "Miasto": "toruński",
+        "MAE": 5721.867680334486,
+        "MAPE": 0.008185790672867649,
+        "Rows": 1
+      },
+      {
+        "Miasto": "wejherowski",
+        "MAE": 106101.14569880038,
+        "MAPE": 0.15540332370213983,
+        "Rows": 5
+      }
+    ]
+  },
+  "Wyjasnienia": {
+    "TopCechySHAP": [
+      [
+        "log_area",
+        0.10810533265308564
+      ],
+      [
+        "area",
+        0.09739967592550532
+      ],
+      [
+        "district",
+        0.06888105009500738
+      ],
+      [
+        "building_type",
+        0.045218312940942584
+      ],
+      [
+        "market",
+        0.03939843122969973
+      ],
+      [
+        "gf_count_muzeum_in_5km",
+        0.03676370351497345
+      ],
+      [
+        "has_elevator",
+        0.03514974734207173
+      ],
+      [
+        "province",
+        0.03458100241676484
+      ],
+      [
+        "age_squared",
+        0.028400160494218105
+      ],
+      [
+        "building_age",
+        0.02735003835141373
+      ]
+    ]
+  }
+}

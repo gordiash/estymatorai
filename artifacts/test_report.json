@@ -1,0 +1,75 @@
+{
+  "SampleRows": 50,
+  "MAE": 62939.77801872398,
+  "MAPE": 0.06699983728924631,
+  "MedAE": 24425.016584022494,
+  "P90AbsError": 90651.82772037793,
+  "P95AbsError": 170689.75694927655,
+  "TopLocalShap": [],
+  "Groups": [
+    {
+      "city": "Białystok",
+      "rows": 1
+    },
+    {
+      "city": "Bielsko-Biała",
+      "rows": 2
+    },
+    {
+      "city": "Bydgoszcz",
+      "rows": 2
+    },
+    {
+      "city": "Gdańsk",
+      "rows": 5
+    },
+    {
+      "city": "Gdynia",
+      "rows": 1
+    },
+    {
+      "city": "Kielce",
+      "rows": 2
+    },
+    {
+      "city": "Kraków",
+      "rows": 5
+    },
+    {
+      "city": "Lublin",
+      "rows": 1
+    },
+    {
+      "city": "Poznań",
+      "rows": 4
+    },
+    {
+      "city": "Rzeszów",
+      "rows": 3
+    },
+    {
+      "city": "Sosnowiec",
+      "rows": 1
+    },
+    {
+      "city": "Szczecin",
+      "rows": 1
+    },
+    {
+      "city": "Toruń",
+      "rows": 1
+    },
+    {
+      "city": "Warszawa",
+      "rows": 14
+    },
+    {
+      "city": "Wrocław",
+      "rows": 3
+    },
+    {
+      "city": "Łódź",
+      "rows": 4
+    }
+  ]
+}
