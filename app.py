@@ -162,19 +162,66 @@ def prepare_apartment_data(data: Dict[str, Any]) -> pd.DataFrame:
     
     return df
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
-    """Strona główna API"""
-    return jsonify({
-        "message": "API wyceny nieruchomości Random Forest",
-        "version": "1.0",
-        "endpoints": {
-            "/predict": "POST - predykcja ceny mieszkania",
-            "/health": "GET - sprawdzenie stanu API",
-            "/upload-model": "POST - przesłanie modelu (.joblib)"
-        },
-        "model_status": "loaded" if model is not None else "not_loaded"
-    })
+    """Strona główna API lub predykcja dla kalkulatorynieruchomosci.pl"""
+    if request.method == 'POST':
+        # Predykcja dla kalkulatorynieruchomosci.pl
+        if model is None:
+            return jsonify({"error": "Model nie został załadowany"}), 500
+        
+        try:
+            # Pobierz dane z request
+            data = request.get_json()
+            
+            if not data:
+                return jsonify({"error": "Brak danych w request"}), 400
+            
+            # Mapuj dane z kalkulatorynieruchomosci.pl
+            mapped_data = map_kalkulator_data(data)
+            
+            # Przygotuj dane mieszkania
+            df = prepare_apartment_data(mapped_data)
+            
+            # Wykonaj predykcję
+            prediction = model.predict(df)[0]
+            
+            # Oblicz cenę za m²
+            area = float(mapped_data.get('area', 62.0))
+            price_per_sqm = prediction / area
+            
+            # Zwróć wynik w formacie oczekiwanym przez kalkulatorynieruchomosci.pl
+            return jsonify({
+                "predicted_price": round(prediction, 2),
+                "price_per_sqm": round(price_per_sqm, 2),
+                "area": area,
+                "city": mapped_data.get('city', 'Toruń'),
+                "rooms": int(mapped_data.get('rooms', 3)),
+                "floor": int(mapped_data.get('floor', 4)),
+                "total_floors": int(mapped_data.get('total_floors', 10)),
+                "has_elevator": bool(mapped_data.get('has_elevator', True)),
+                "success": True,
+                "source": "Random Forest Model"
+            })
+            
+        except Exception as e:
+            return jsonify({
+                "error": f"Błąd predykcji: {str(e)}",
+                "success": False
+            }), 500
+    else:
+        # GET - informacje o API
+        return jsonify({
+            "message": "API wyceny nieruchomości Random Forest",
+            "version": "1.0",
+            "endpoints": {
+                "/": "POST - predykcja ceny mieszkania (dla kalkulatorynieruchomosci.pl)",
+                "/predict": "POST - predykcja ceny mieszkania",
+                "/health": "GET - sprawdzenie stanu API",
+                "/upload-model": "POST - przesłanie modelu (.joblib)"
+            },
+            "model_status": "loaded" if model is not None else "not_loaded"
+        })
 
 @app.route('/health')
 def health():
@@ -224,6 +271,28 @@ def upload_model():
             "success": False
         }), 500
 
+def map_kalkulator_data(data: Dict[str, Any]) -> Dict[str, Any]:
+    """Mapuje dane z kalkulatorynieruchomosci.pl na format API"""
+    mapped = {
+        "city": data.get("city", "Toruń"),
+        "area": float(data.get("area", 62.0)),
+        "rooms": int(data.get("rooms", 3)),
+        "floor": int(data.get("floor", 4)),
+        "total_floors": int(data.get("totalFloors", data.get("total_floors", 10))),
+        "year_of_construction": int(data.get("year", 2010)),
+        "building_type": data.get("buildingType", "blok"),
+        "heating_type": data.get("heating", "miejskie"),
+        "standard_of_finish": data.get("finishing", "do wykończenia"),
+        "has_elevator": data.get("elevator", "no").lower() in ["yes", "tak", "true", "1"],
+        "has_balcony": data.get("balcony", "no").lower() in ["yes", "tak", "true", "1"],
+        "has_basement": data.get("basement", "no").lower() in ["yes", "tak", "true", "1"],
+        "has_separate_kitchen": data.get("kitchenType", "separate").lower() == "separate",
+        "market": "wtórny",
+        "district": data.get("district", "Centrum"),
+        "province": "kujawsko-pomorskie"
+    }
+    return mapped
+
 @app.route('/predict', methods=['POST'])
 def predict():
     """Predykcja ceny mieszkania"""
@@ -265,6 +334,7 @@ def predict():
             "error": f"Błąd predykcji: {str(e)}",
             "success": False
         }), 500
+
 
 if __name__ == '__main__':
     # Spróbuj załadować model przy starcie (opcjonalnie)
