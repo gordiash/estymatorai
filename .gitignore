@@ -1,0 +1,73 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Large model files (too big for GitHub)
+artifacts/*.joblib
+artifacts/*.cbm
+artifacts/catboost_info/
+artifacts/per_city/
+
+# Keep only essential files
+!artifacts/feature_schema.json
+!artifacts/*.json
+
+# Training logs
+catboost_info/
+*.log
+*.tsv
+
+# Test files
+test_specific_apartment.py
+test_torun_simple.py
+test_api.py
+
+# Batch files
+*.bat
