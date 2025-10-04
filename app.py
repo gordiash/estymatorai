@@ -5,6 +5,7 @@ import joblib
 from pathlib import Path
 import os
 from typing import Dict, Any
+import tempfile
 
 app = Flask(__name__)
 
@@ -15,13 +16,14 @@ def load_model():
     """Ładuje model Random Forest"""
     global model
     try:
+        # Sprawdź czy model został przesłany przez API
         model_path = Path("artifacts/model_rf.joblib")
         if model_path.exists():
             model = joblib.load(model_path.as_posix())
             print("Model Random Forest załadowany pomyślnie")
             return True
         else:
-            print("Brak pliku modelu!")
+            print("Brak pliku modelu! Wyślij model przez /upload-model")
             return False
     except Exception as e:
         print(f"Błąd ładowania modelu: {e}")
@@ -141,8 +143,10 @@ def home():
         "version": "1.0",
         "endpoints": {
             "/predict": "POST - predykcja ceny mieszkania",
-            "/health": "GET - sprawdzenie stanu API"
-        }
+            "/health": "GET - sprawdzenie stanu API",
+            "/upload-model": "POST - przesłanie modelu (.joblib)"
+        },
+        "model_status": "loaded" if model is not None else "not_loaded"
     })
 
 @app.route('/health')
@@ -152,6 +156,45 @@ def health():
         "status": "healthy",
         "model_loaded": model is not None
     })
+
+@app.route('/upload-model', methods=['POST'])
+def upload_model():
+    """Endpoint do przesłania modelu"""
+    try:
+        if 'model' not in request.files:
+            return jsonify({"error": "Brak pliku modelu w request"}), 400
+        
+        file = request.files['model']
+        if file.filename == '':
+            return jsonify({"error": "Nie wybrano pliku"}), 400
+        
+        if not file.filename.endswith('.joblib'):
+            return jsonify({"error": "Plik musi mieć rozszerzenie .joblib"}), 400
+        
+        # Utwórz katalog artifacts jeśli nie istnieje
+        artifacts_dir = Path("artifacts")
+        artifacts_dir.mkdir(exist_ok=True)
+        
+        # Zapisz plik
+        model_path = artifacts_dir / "model_rf.joblib"
+        file.save(model_path.as_posix())
+        
+        # Przeładuj model
+        global model
+        if load_model():
+            return jsonify({
+                "message": "Model został przesłany i załadowany pomyślnie",
+                "file_size": f"{model_path.stat().st_size / (1024*1024):.2f} MB",
+                "success": True
+            })
+        else:
+            return jsonify({"error": "Model został przesłany, ale nie udało się go załadować"}), 500
+            
+    except Exception as e:
+        return jsonify({
+            "error": f"Błąd podczas przesyłania modelu: {str(e)}",
+            "success": False
+        }), 500
 
 @app.route('/predict', methods=['POST'])
 def predict():
