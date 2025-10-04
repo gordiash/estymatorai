@@ -133,6 +133,33 @@ def prepare_apartment_data(data: Dict[str, Any]) -> pd.DataFrame:
     # Stwórz DataFrame
     df = pd.DataFrame([apartment_data])
     
+    # Dodaj brakujące kolumny feature engineering
+    area = df['area'].iloc[0]
+    floor = df['floor'].iloc[0]
+    rooms = df['rooms'].iloc[0]
+    total_floors = df['total_floors'].iloc[0]
+    year_of_construction = df['year_of_construction'].iloc[0]
+    listing_year = df['listing_year'].iloc[0]
+    
+    # log_area
+    df['log_area'] = np.log1p(area)
+    
+    # building_age
+    current_year = 2024
+    df['building_age'] = float(listing_year - year_of_construction)
+    
+    # area_x_floor
+    df['area_x_floor'] = area * floor
+    
+    # sqm_per_room
+    df['sqm_per_room'] = area / rooms if rooms > 0 else area
+    
+    # floor_ratio
+    df['floor_ratio'] = floor / total_floors if total_floors > 0 else 0.0
+    
+    # age_squared
+    df['age_squared'] = df['building_age'] ** 2
+    
     return df
 
 @app.route('/')
