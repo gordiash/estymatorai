@@ -154,7 +154,8 @@ def health():
     """Sprawdzenie stanu API"""
     return jsonify({
         "status": "healthy",
-        "model_loaded": model is not None
+        "model_loaded": model is not None,
+        "message": "API działa poprawnie" if model is not None else "API działa, ale model nie został załadowany. Użyj /upload-model aby przesłać model."
     })
 
 @app.route('/upload-model', methods=['POST'])
@@ -239,9 +240,10 @@ def predict():
         }), 500
 
 if __name__ == '__main__':
-    # Załaduj model przy starcie
-    if load_model():
-        port = int(os.environ.get('PORT', 5000))
-        app.run(host='0.0.0.0', port=port, debug=False)
-    else:
-        print("Nie można załadować modelu. Sprawdź czy plik artifacts/model_rf.joblib istnieje.")
+    # Spróbuj załadować model przy starcie (opcjonalnie)
+    load_model()
+    
+    # Uruchom aplikację niezależnie od stanu modelu
+    port = int(os.environ.get('PORT', 5000))
+    print(f"Uruchamianie aplikacji na porcie {port}")
+    app.run(host='0.0.0.0', port=port, debug=False)
