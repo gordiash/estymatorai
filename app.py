@@ -6,6 +6,7 @@ from pathlib import Path
 import os
 from typing import Dict, Any
 import tempfile
+import requests
 
 app = Flask(__name__)
 
@@ -27,6 +28,36 @@ def load_model():
             return False
     except Exception as e:
         print(f"Błąd ładowania modelu: {e}")
+        return False
+
+def load_model_from_url(model_url: str | None = None) -> bool:
+    """Pobiera i ładuje model z zewnętrznego URL (np. Google Drive/S3).
+
+    Jeśli model_url nie zostanie podany, zostanie użyta zmienna środowiskowa MODEL_URL.
+    Zwraca True, jeśli model został pobrany i załadowany poprawnie.
+    """
+    global model
+    try:
+        if model_url is None:
+            model_url = os.getenv('MODEL_URL', '').strip()
+        if not model_url:
+            return False
+
+        print(f"Pobieranie modelu z: {model_url}")
+        resp = requests.get(model_url, timeout=600)
+        resp.raise_for_status()
+
+        artifacts_dir = Path("artifacts")
+        artifacts_dir.mkdir(exist_ok=True)
+        model_path = artifacts_dir / "model_rf.joblib"
+        with open(model_path.as_posix(), "wb") as f:
+            f.write(resp.content)
+
+        model = joblib.load(model_path.as_posix())
+        print("Model załadowany z zewnętrznego URL")
+        return True
+    except Exception as e:
+        print(f"Błąd pobierania/ładowania modelu z URL: {e}")
         return False
 
 def prepare_apartment_data(data: Dict[str, Any]) -> pd.DataFrame:
@@ -271,6 +302,30 @@ def upload_model():
             "success": False
         }), 500
 
+@app.route('/download-model', methods=['POST'])
+def download_model():
+    """Pobiera model z przekazanego w body JSON pola model_url i ładuje go."""
+    try:
+        data = request.get_json(silent=True) or {}
+        model_url = (data.get('model_url') or '').strip()
+        if not model_url:
+            return jsonify({"error": "Brak 'model_url' w body"}), 400
+
+        if load_model_from_url(model_url):
+            model_path = Path("artifacts/model_rf.joblib")
+            return jsonify({
+                "message": "Model pobrany i załadowany pomyślnie",
+                "file_size_mb": f"{model_path.stat().st_size / (1024*1024):.2f}",
+                "success": True
+            })
+        else:
+            return jsonify({"error": "Nie udało się pobrać/załadować modelu z podanego URL"}), 500
+    except Exception as e:
+        return jsonify({
+            "error": f"Błąd podczas pobierania modelu: {str(e)}",
+            "success": False
+        }), 500
+
 def map_kalkulator_data(data: Dict[str, Any]) -> Dict[str, Any]:
     """Mapuje dane z kalkulatorynieruchomosci.pl na format API"""
     mapped = {
@@ -337,8 +392,9 @@ def predict():
 
 
 if __name__ == '__main__':
-    # Spróbuj załadować model przy starcie (opcjonalnie)
-    load_model()
+    # Najpierw spróbuj pobrać i załadować model z MODEL_URL, potem lokalnie
+    if not load_model_from_url():
+        load_model()
     
     # Uruchom aplikację niezależnie od stanu modelu
     port = int(os.environ.get('PORT', 5000))
