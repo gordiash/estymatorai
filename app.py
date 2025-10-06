@@ -397,20 +397,8 @@ def predict():
 
 
 if __name__ == '__main__':
-    # Spróbuj załadować model w tle (nie blokuj startu aplikacji)
-    import threading
-    
-    def load_model_background():
-        """Ładuje model w tle"""
-        print("Próba załadowania modelu w tle...")
-        if not load_model_from_url():
-            load_model()
-    
-    # Uruchom ładowanie modelu w osobnym wątku
-    model_thread = threading.Thread(target=load_model_background, daemon=True)
-    model_thread.start()
-    
-    # Uruchom aplikację natychmiast
+    # Uruchom aplikację bez modelu - model można załadować później przez API
     port = int(os.environ.get('PORT', 5000))
     print(f"Uruchamianie aplikacji na porcie {port}")
+    print("Model można załadować przez /upload-model lub /download-model")
     app.run(host='0.0.0.0', port=port, debug=False)
