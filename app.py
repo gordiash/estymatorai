@@ -41,10 +41,12 @@ def load_model_from_url(model_url: str | None = None) -> bool:
         if model_url is None:
             model_url = os.getenv('MODEL_URL', '').strip()
         if not model_url:
+            print("Brak MODEL_URL - pomijam pobieranie z zewnętrznego URL")
             return False
 
         print(f"Pobieranie modelu z: {model_url}")
-        resp = requests.get(model_url, timeout=600)
+        # Krótszy timeout dla healthchecku
+        resp = requests.get(model_url, timeout=30)
         resp.raise_for_status()
 
         artifacts_dir = Path("artifacts")
@@ -56,6 +58,9 @@ def load_model_from_url(model_url: str | None = None) -> bool:
         model = joblib.load(model_path.as_posix())
         print("Model załadowany z zewnętrznego URL")
         return True
+    except requests.exceptions.Timeout:
+        print("Timeout pobierania modelu - aplikacja uruchomi się bez modelu")
+        return False
     except Exception as e:
         print(f"Błąd pobierania/ładowania modelu z URL: {e}")
         return False
@@ -392,11 +397,20 @@ def predict():
 
 
 if __name__ == '__main__':
-    # Najpierw spróbuj pobrać i załadować model z MODEL_URL, potem lokalnie
-    if not load_model_from_url():
-        load_model()
+    # Spróbuj załadować model w tle (nie blokuj startu aplikacji)
+    import threading
     
-    # Uruchom aplikację niezależnie od stanu modelu
+    def load_model_background():
+        """Ładuje model w tle"""
+        print("Próba załadowania modelu w tle...")
+        if not load_model_from_url():
+            load_model()
+    
+    # Uruchom ładowanie modelu w osobnym wątku
+    model_thread = threading.Thread(target=load_model_background, daemon=True)
+    model_thread.start()
+    
+    # Uruchom aplikację natychmiast
     port = int(os.environ.get('PORT', 5000))
     print(f"Uruchamianie aplikacji na porcie {port}")
     app.run(host='0.0.0.0', port=port, debug=False)
