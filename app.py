@@ -434,8 +434,52 @@ def download_model():
 
 def map_kalkulator_data(data: Dict[str, Any]) -> Dict[str, Any]:
     """Mapuje dane z kalkulatorynieruchomosci.pl na format API"""
+    
+    # Mapowanie miasta na województwo
+    city_to_province = {
+        "Warszawa": "mazowieckie",
+        "Kraków": "małopolskie", 
+        "Gdańsk": "pomorskie",
+        "Wrocław": "dolnośląskie",
+        "Poznań": "wielkopolskie",
+        "Łódź": "łódzkie",
+        "Toruń": "kujawsko-pomorskie",
+        "Olsztyn": "warmińsko-mazurskie"
+    }
+    
+    city = data.get("city", "Toruń")
+    province = city_to_province.get(city, "kujawsko-pomorskie")
+    
+    # Mapowanie locationTier na district
+    location_tier = data.get("locationTier", "standard")
+    if location_tier == "premium":
+        district = "Centrum"
+    elif location_tier == "standard":
+        district = "Śródmieście"
+    else:
+        district = data.get("district", "Centrum")
+    
+    # Mapowanie condition na standard_of_finish
+    condition = data.get("condition", "good")
+    if condition == "excellent":
+        standard_of_finish = "wysoki"
+    elif condition == "good":
+        standard_of_finish = "standardowy"
+    elif condition == "average":
+        standard_of_finish = "do wykończenia"
+    else:
+        standard_of_finish = "do wykończenia"
+    
+    # Mapowanie parking
+    parking = data.get("parking", "street")
+    has_garage = parking in ["garage", "garaz"]
+    
+    # Mapowanie transport
+    transport = data.get("transport", "medium")
+    # Można dodać logikę dla transportu jeśli model tego wymaga
+    
     mapped = {
-        "city": data.get("city", "Toruń"),
+        "city": city,
         "area": float(data.get("area", 62.0)),
         "rooms": int(data.get("rooms", 3)),
         "floor": int(data.get("floor", 4)),
@@ -443,14 +487,20 @@ def map_kalkulator_data(data: Dict[str, Any]) -> Dict[str, Any]:
         "year_of_construction": int(data.get("year", 2010)),
         "building_type": data.get("buildingType", "blok"),
         "heating_type": data.get("heating", "miejskie"),
-        "standard_of_finish": data.get("finishing", "do wykończenia"),
+        "standard_of_finish": standard_of_finish,
         "has_elevator": data.get("elevator", "no").lower() in ["yes", "tak", "true", "1"],
         "has_balcony": data.get("balcony", "no").lower() in ["yes", "tak", "true", "1"],
         "has_basement": data.get("basement", "no").lower() in ["yes", "tak", "true", "1"],
         "has_separate_kitchen": data.get("kitchenType", "separate").lower() == "separate",
+        "has_garage": has_garage,
         "market": "wtórny",
-        "district": data.get("district", "Centrum"),
-        "province": "kujawsko-pomorskie"
+        "district": district,
+        "province": province,
+        "location_tier": location_tier,
+        "condition": condition,
+        "parking": parking,
+        "transport": transport,
+        "orientation": data.get("orientation", "south")
     }
     return mapped
 
