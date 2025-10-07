@@ -198,6 +198,11 @@ def prepare_apartment_data(data: Dict[str, Any]) -> pd.DataFrame:
     
     return df
 
+@app.route('/api/valuation', methods=['POST'])
+def api_valuation():
+    """Endpoint dla kalkulatorynieruchomosci.pl - alias dla root endpoint"""
+    return home()
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     """Strona główna API lub predykcja dla kalkulatorynieruchomosci.pl"""
