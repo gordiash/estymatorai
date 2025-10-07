@@ -200,8 +200,67 @@ def prepare_apartment_data(data: Dict[str, Any]) -> pd.DataFrame:
 
 @app.route('/api/valuation', methods=['POST'])
 def api_valuation():
-    """Endpoint dla kalkulatorynieruchomosci.pl - alias dla root endpoint"""
-    return home()
+    """Endpoint dla kalkulatorynieruchomosci.pl - zwraca odpowiedź w oczekiwanym formacie"""
+    if model is None:
+        return jsonify({"error": "Model nie został załadowany"}), 500
+    
+    try:
+        # Pobierz dane z request - obsługa różnych typów content
+        data = None
+        
+        # Spróbuj JSON
+        if request.is_json:
+            data = request.get_json()
+        else:
+            # Spróbuj form data
+            if request.form:
+                data = request.form.to_dict()
+            else:
+                # Spróbuj raw data
+                try:
+                    data = request.get_json(force=True)
+                except:
+                    # Spróbuj parse jako JSON z raw data
+                    raw_data = request.get_data(as_text=True)
+                    if raw_data:
+                        import json
+                        data = json.loads(raw_data)
+        
+        if not data:
+            return jsonify({"error": "Brak danych w request"}), 400
+        
+        # Mapuj dane z kalkulatorynieruchomosci.pl
+        mapped_data = map_kalkulator_data(data)
+        
+        # Przygotuj dane mieszkania
+        df = prepare_apartment_data(mapped_data)
+        
+        # Wykonaj predykcję
+        prediction = model.predict(df)[0]
+        
+        # Oblicz cenę za m²
+        area = float(mapped_data.get('area', 54.0))
+        price_per_sqm = prediction / area
+        
+        # Zwróć wynik w formacie oczekiwanym przez kalkulatorynieruchomosci.pl
+        return jsonify({
+            "predicted_price": round(prediction, 2),
+            "price_per_sqm": round(price_per_sqm, 2),
+            "area": area,
+            "city": mapped_data.get('city', 'Olsztyn'),
+            "rooms": int(mapped_data.get('rooms', 2)),
+            "floor": int(mapped_data.get('floor', 2)),
+            "total_floors": int(mapped_data.get('total_floors', 4)),
+            "has_elevator": bool(mapped_data.get('has_elevator', False)),
+            "success": True,
+            "source": "Random Forest Model"
+        })
+        
+    except Exception as e:
+        return jsonify({
+            "error": f"Błąd predykcji: {str(e)}",
+            "success": False
+        }), 500
 
 @app.route('/valuation', methods=['POST'])
 def valuation():
