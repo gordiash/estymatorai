@@ -212,8 +212,26 @@ def home():
             return jsonify({"error": "Model nie został załadowany"}), 500
         
         try:
-            # Pobierz dane z request
-            data = request.get_json()
+            # Pobierz dane z request - obsługa różnych typów content
+            data = None
+            
+            # Spróbuj JSON
+            if request.is_json:
+                data = request.get_json()
+            else:
+                # Spróbuj form data
+                if request.form:
+                    data = request.form.to_dict()
+                else:
+                    # Spróbuj raw data
+                    try:
+                        data = request.get_json(force=True)
+                    except:
+                        # Spróbuj parse jako JSON z raw data
+                        raw_data = request.get_data(as_text=True)
+                        if raw_data:
+                            import json
+                            data = json.loads(raw_data)
             
             if not data:
                 return jsonify({"error": "Brak danych w request"}), 400
