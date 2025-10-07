@@ -18,7 +18,7 @@ def load_model():
     global model
     try:
         # Sprawdź czy model został przesłany przez API
-        model_path = Path("artifacts/model_rf.joblib")
+        model_path = Path("artifacts/model_rf_small.joblib")
         if model_path.exists():
             model = joblib.load(model_path.as_posix())
             print("Model Random Forest załadowany pomyślnie")
@@ -51,7 +51,7 @@ def load_model_from_url(model_url: str | None = None) -> bool:
 
         artifacts_dir = Path("artifacts")
         artifacts_dir.mkdir(exist_ok=True)
-        model_path = artifacts_dir / "model_rf.joblib"
+        model_path = artifacts_dir / "model_rf_small.joblib"
         with open(model_path.as_posix(), "wb") as f:
             f.write(resp.content)
 
@@ -287,7 +287,7 @@ def upload_model():
         artifacts_dir.mkdir(exist_ok=True)
         
         # Zapisz plik
-        model_path = artifacts_dir / "model_rf.joblib"
+        model_path = artifacts_dir / "model_rf_small.joblib"
         file.save(model_path.as_posix())
         
         # Przeładuj model
@@ -317,7 +317,7 @@ def download_model():
             return jsonify({"error": "Brak 'model_url' w body"}), 400
 
         if load_model_from_url(model_url):
-            model_path = Path("artifacts/model_rf.joblib")
+            model_path = Path("artifacts/model_rf_small.joblib")
             return jsonify({
                 "message": "Model pobrany i załadowany pomyślnie",
                 "file_size_mb": f"{model_path.stat().st_size / (1024*1024):.2f}",
@@ -397,8 +397,15 @@ def predict():
 
 
 if __name__ == '__main__':
-    # Uruchom aplikację bez modelu - model można załadować później przez API
+    # Spróbuj załadować model przy starcie
+    print("Próba załadowania modelu przy starcie...")
+    load_model()
+    
+    # Uruchom aplikację
     port = int(os.environ.get('PORT', 5000))
     print(f"Uruchamianie aplikacji na porcie {port}")
-    print("Model można załadować przez /upload-model lub /download-model")
+    if model is not None:
+        print("Model załadowany pomyślnie!")
+    else:
+        print("Model nie został załadowany. Można go załadować przez /upload-model lub /download-model")
     app.run(host='0.0.0.0', port=port, debug=False)

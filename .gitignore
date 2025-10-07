@@ -50,10 +50,13 @@ Thumbs.db
 .env.*.local
 
 # Large model files (too big for GitHub)
-artifacts/*.joblib
-artifacts/*.cbm
+artifacts/model_rf.joblib
+artifacts/model.cbm
 artifacts/catboost_info/
 artifacts/per_city/
+
+# Keep small model for Railway deploy
+!artifacts/model_rf_small.joblib
 
 # Keep only essential files
 !artifacts/feature_schema.json
