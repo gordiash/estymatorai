@@ -203,6 +203,16 @@ def api_valuation():
     """Endpoint dla kalkulatorynieruchomosci.pl - alias dla root endpoint"""
     return home()
 
+@app.route('/valuation', methods=['POST'])
+def valuation():
+    """Endpoint valuation - alias dla root endpoint"""
+    return home()
+
+@app.route('/api/predict', methods=['POST'])
+def api_predict():
+    """Endpoint api/predict - alias dla root endpoint"""
+    return home()
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     """Strona główna API lub predykcja dla kalkulatorynieruchomosci.pl"""
