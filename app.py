@@ -435,29 +435,119 @@ def download_model():
 def map_kalkulator_data(data: Dict[str, Any]) -> Dict[str, Any]:
     """Mapuje dane z kalkulatorynieruchomosci.pl na format API"""
     
-    # Mapowanie miasta na województwo
+    # Mapowanie miasta na województwo - rozszerzona lista dla top 30 miast
     city_to_province = {
+        # Mazowieckie
         "Warszawa": "mazowieckie",
-        "Kraków": "małopolskie", 
-        "Gdańsk": "pomorskie",
+        "Płock": "mazowieckie",
+        "Radom": "mazowieckie",
+        
+        # Małopolskie
+        "Kraków": "małopolskie",
+        "Tarnów": "małopolskie",
+        
+        # Dolnośląskie
         "Wrocław": "dolnośląskie",
+        "Legnica": "dolnośląskie",
+        
+        # Pomorskie
+        "Gdańsk": "pomorskie",
+        "Gdynia": "pomorskie",
+        "Sopot": "pomorskie",
+        "Police": "pomorskie",
+        
+        # Wielkopolskie
         "Poznań": "wielkopolskie",
+        "Kalisz": "wielkopolskie",
+        
+        # Łódzkie
         "Łódź": "łódzkie",
+        "Piotrków Trybunalski": "łódzkie",
+        
+        # Lubelskie
+        "Lublin": "lubelskie",
+        "Chełm": "lubelskie",
+        
+        # Kujawsko-pomorskie
+        "Bydgoszcz": "kujawsko-pomorskie",
         "Toruń": "kujawsko-pomorskie",
-        "Olsztyn": "warmińsko-mazurskie"
+        
+        # Podkarpackie
+        "Rzeszów": "podkarpackie",
+        "Przemyśl": "podkarpackie",
+        
+        # Zachodniopomorskie
+        "Szczecin": "zachodniopomorskie",
+        "Koszalin": "zachodniopomorskie",
+        
+        # Śląskie
+        "Katowice": "śląskie",
+        "Częstochowa": "śląskie",
+        "Sosnowiec": "śląskie",
+        "Gliwice": "śląskie",
+        "Zabrze": "śląskie",
+        "Bielsko-Biała": "śląskie",
+        "Ruda Śląska": "śląskie",
+        
+        # Świętokrzyskie
+        "Kielce": "świętokrzyskie",
+        
+        # Podlaskie
+        "Białystok": "podlaskie",
+        
+        # Warmińsko-mazurskie
+        "Olsztyn": "warmińsko-mazurskie",
+        
+        # Lubuskie
+        "Gorzów Wielkopolski": "lubuskie",
+        "Zielona Góra": "lubuskie"
     }
     
     city = data.get("city", "Toruń")
     province = city_to_province.get(city, "kujawsko-pomorskie")
     
-    # Mapowanie locationTier na district
+    # Mapowanie locationTier na district z uwzględnieniem miasta
     location_tier = data.get("locationTier", "standard")
-    if location_tier == "premium":
-        district = "Centrum"
-    elif location_tier == "standard":
-        district = "Śródmieście"
+    
+    # Mapowanie district dla głównych miast
+    city_districts = {
+        "Warszawa": {"premium": "Śródmieście", "standard": "Mokotów", "basic": "Wola"},
+        "Kraków": {"premium": "Stare Miasto", "standard": "Krowodrza", "basic": "Nowa Huta"},
+        "Gdańsk": {"premium": "Śródmieście", "standard": "Wrzeszcz", "basic": "Orunia"},
+        "Wrocław": {"premium": "Stare Miasto", "standard": "Krzyki", "basic": "Psie Pole"},
+        "Poznań": {"premium": "Stare Miasto", "standard": "Jeżyce", "basic": "Wilda"},
+        "Łódź": {"premium": "Śródmieście", "standard": "Bałuty", "basic": "Polesie"},
+        "Lublin": {"premium": "Stare Miasto", "standard": "Śródmieście", "basic": "Wieniawa"},
+        "Bydgoszcz": {"premium": "Śródmieście", "standard": "Szwederowo", "basic": "Fordon"},
+        "Szczecin": {"premium": "Śródmieście", "standard": "Prawobrzeże", "basic": "Zachód"},
+        "Katowice": {"premium": "Śródmieście", "standard": "Zawodzie", "basic": "Bogucice"},
+        "Gdynia": {"premium": "Śródmieście", "standard": "Wzgórze Św. Maksymiliana", "basic": "Chylonia"},
+        "Białystok": {"premium": "Śródmieście", "standard": "Bojary", "basic": "Wygoda"},
+        "Częstochowa": {"premium": "Śródmieście", "standard": "Raków", "basic": "Błeszno"},
+        "Kielce": {"premium": "Śródmieście", "standard": "Śródmieście", "basic": "Śródmieście"},
+        "Toruń": {"premium": "Stare Miasto", "standard": "Śródmieście", "basic": "Podgórz"},
+        "Bielsko-Biała": {"premium": "Śródmieście", "standard": "Mikuszowice", "basic": "Kamienica"},
+        "Sosnowiec": {"premium": "Śródmieście", "standard": "Śródmieście", "basic": "Śródmieście"},
+        "Gorzów Wielkopolski": {"premium": "Śródmieście", "standard": "Śródmieście", "basic": "Śródmieście"},
+        "Radom": {"premium": "Śródmieście", "standard": "Śródmieście", "basic": "Śródmieście"},
+        "Olsztyn": {"premium": "Śródmieście", "standard": "Śródmieście", "basic": "Śródmieście"},
+        "Gliwice": {"premium": "Śródmieście", "standard": "Śródmieście", "basic": "Śródmieście"},
+        "Zabrze": {"premium": "Śródmieście", "standard": "Śródmieście", "basic": "Śródmieście"},
+        "Płock": {"premium": "Śródmieście", "standard": "Śródmieście", "basic": "Śródmieście"},
+        "Police": {"premium": "Śródmieście", "standard": "Śródmieście", "basic": "Śródmieście"},
+        "Sopot": {"premium": "Śródmieście", "standard": "Śródmieście", "basic": "Śródmieście"}
+    }
+    
+    if city in city_districts:
+        district = city_districts[city].get(location_tier, city_districts[city]["standard"])
     else:
-        district = data.get("district", "Centrum")
+        # Domyślne mapowanie dla innych miast
+        if location_tier == "premium":
+            district = "Centrum"
+        elif location_tier == "standard":
+            district = "Śródmieście"
+        else:
+            district = data.get("district", "Centrum")
     
     # Mapowanie condition na standard_of_finish
     condition = data.get("condition", "good")
